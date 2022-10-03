@@ -1,6 +1,7 @@
 ﻿using AdoNetRepository.Data.Entities;
 using AdoNetRepository.Data.Models;
 using Microsoft.Data.SqlClient;
+using MoreLinq;
 
 namespace AdoNetRepository.Data.Repositories;
 
@@ -35,24 +36,33 @@ public class CountryRepository : BaseRepository<Country>
 
     private IList<Country> GetCountries(IList<CountryRead> countryReads)
     {
-        var countries = new List<Country>();
-
-        foreach (var countryRead in countryReads)
-        {
-            var country = new Country
-            {
-                Id = countryRead.CountryId,
-                Name = countryRead.CountryName,
-                Cities = countryReads.Where(x => x.CityId == countryRead.CityId)
-                    .Select(y => 
-                        new City
-                        {
-                            Id = y.CityId,
-                            Name = y.CityName,
-                        }).ToList(),
-            };
-        }
+        var countries = countryReads.GroupBy(x => x.CountryId).Select(GetCountry).ToList();
 
         return countries;
+    }
+
+    private Country GetCountry(IGrouping<Guid, CountryRead> countryReads)
+    {
+        var cityGroups = countryReads.GroupBy(x => x.CityId);
+
+        var country = new Country
+        {
+            Id = countryReads.First().CountryId,
+            Name = countryReads.First().CountryName,
+            Cities = new List<City>(),
+        };
+
+        foreach (var cityGroup in cityGroups)
+        {
+            country.Cities.Add(new City
+            {
+                Id = cityGroup.First().CityId,
+                Name = cityGroup.First().CityName,
+                CountryId = country.Id,
+                Airports = cityGroup.Select(x => new Airport{Id = x.AirportId, Name = x.AirportName, CityId = x.CityId}).ToList(),
+            });
+        }
+
+        return country;
     }
 }

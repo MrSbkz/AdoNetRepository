@@ -16,14 +16,13 @@ public abstract class BaseRepository<TEntity>
         _sqlQuery = configuration.GetSection(entityName).Get<SqlQuery>();
     }
 
-    public async Task<IList<TEntity>> GetListAsync(string? condition = null)
+    public async Task<IList<TEntity>> GetListAsync()
     {
-        var query = $"{_sqlQuery.GetList} {condition}";
         await using var sqlConnection = new SqlConnection(_connectionString);
-        var cmd = new SqlCommand(query, sqlConnection);
+        var cmd = new SqlCommand(_sqlQuery.GetList, sqlConnection);
         cmd.CommandType = CommandType.Text;
         sqlConnection.Open();
-
+        
         var reader = await cmd.ExecuteReaderAsync();
 
         var entities = await ReadDataAsync(reader);
