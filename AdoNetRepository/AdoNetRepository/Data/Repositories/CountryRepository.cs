@@ -1,20 +1,17 @@
 ﻿using AdoNetRepository.Data.Entities;
 using AdoNetRepository.Data.Models;
 using Microsoft.Data.SqlClient;
-using MoreLinq;
 
 namespace AdoNetRepository.Data.Repositories;
 
 public class CountryRepository : BaseRepository<Country>
 {
-    private readonly CityRepository _cityRepository;
     
-    public CountryRepository(IConfiguration configuration, CityRepository cityRepository) : base(configuration)
+    public CountryRepository(IConfiguration configuration) : base(configuration)
     {
-        _cityRepository = cityRepository;
     }
 
-    protected override async Task<IList<Country>> ReadDataAsync(SqlDataReader reader)
+    protected override IList<Country> ReadDataAsync(SqlDataReader reader)
     {
         var countries = new List<CountryRead>();
 
@@ -32,6 +29,16 @@ public class CountryRepository : BaseRepository<Country>
         }
 
         return GetCountries(countries);
+    }
+
+    protected override string GetQueryForUpdate(Country entity, string queryRaw)
+    {
+        return string.Format(queryRaw, entity.Name, entity.Id);
+    }
+
+    protected override string GetQueryForInsert(Country entity, string queryRaw)
+    {
+        return string.Format(queryRaw, entity.Id.ToString(), entity.Name);
     }
 
     private IList<Country> GetCountries(IList<CountryRead> countryReads)
