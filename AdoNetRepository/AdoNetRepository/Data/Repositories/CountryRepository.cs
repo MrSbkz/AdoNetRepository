@@ -13,11 +13,11 @@ public class CountryRepository : BaseRepository<Country>
 
     protected override IList<Country> ReadDataAsync(SqlDataReader reader)
     {
-        var countries = new List<CountryRead>();
+        var countries = new List<CountryResponse>();
 
         while (reader.Read())
         {
-            countries.Add(new CountryRead
+            countries.Add(new CountryResponse
             {
                 CountryId = new Guid(reader["CountryId"].ToString() ?? string.Empty),
                 CityId = new Guid(reader["CityId"].ToString() ?? string.Empty),
@@ -41,14 +41,14 @@ public class CountryRepository : BaseRepository<Country>
         return string.Format(queryRaw, entity.Id.ToString(), entity.Name);
     }
 
-    private IList<Country> GetCountries(IList<CountryRead> countryReads)
+    private IList<Country> GetCountries(IList<CountryResponse> countryReads)
     {
         var countries = countryReads.GroupBy(x => x.CountryId).Select(GetCountry).ToList();
 
         return countries;
     }
 
-    private Country GetCountry(IGrouping<Guid, CountryRead> countryReads)
+    private Country GetCountry(IGrouping<Guid, CountryResponse> countryReads)
     {
         var cityGroups = countryReads.GroupBy(x => x.CityId);
 

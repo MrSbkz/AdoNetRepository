@@ -1,20 +1,20 @@
-﻿using AdoNetRepository.Data.Entities;
-using AdoNetRepository.Data.Repositories;
+﻿using AdoNetRepository.Data;
+using AdoNetRepository.Data.Entities;
 using AdoNetRepository.Services.Interfaces;
 
 namespace AdoNetRepository.Services;
 
 public class CityService : ICityService
 {
-    private readonly CityRepository _cityRepository;
+    private readonly UnitOfWork _unitOfWork;
 
-    public CityService(CityRepository cityRepository)
+    public CityService(UnitOfWork unitOfWork)
     {
-        _cityRepository = cityRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<IList<City>> GetCitiesAsync()
     {
-        return await _cityRepository.GetListAsync();
+        return await _unitOfWork.Cities.GetListAsync();
     }
 }

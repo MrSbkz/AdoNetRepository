@@ -1,6 +1,6 @@
 ﻿namespace AdoNetRepository.Data.Models;
 
-public class CountryRead
+public class CountryResponse
 {
     public Guid CountryId { get; set; }
 

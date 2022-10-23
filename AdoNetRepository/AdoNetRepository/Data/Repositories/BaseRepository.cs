@@ -30,9 +30,9 @@ public abstract class BaseRepository<TEntity>
         return entities;
     }
 
-    public async Task<TEntity?> GetByIdAsync(object id)
+    public async Task<TEntity?> GetSingleAsync(object parameter)
     {
-        var query = string.Format(_sqlQuery.GetById, id);
+        var query = string.Format(_sqlQuery.GetSingle, parameter);
         
         await using var sqlConnection = new SqlConnection(_connectionString);
         var cmd = new SqlCommand(query, sqlConnection);

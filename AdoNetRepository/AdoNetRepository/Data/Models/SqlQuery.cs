@@ -4,7 +4,7 @@ public class SqlQuery
 {
     public string GetList { get; set; } = string.Empty;
 
-    public string GetById { get; set; } = string.Empty;
+    public string GetSingle { get; set; } = string.Empty;
 
     public string Update { get; set; } = string.Empty;
 

@@ -1,3 +1,4 @@
+using AdoNetRepository.Data;
 using AdoNetRepository.Data.Repositories;
 using AdoNetRepository.Services;
 using AdoNetRepository.Services.Interfaces;
@@ -8,8 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<CountryRepository>();
 builder.Services.AddScoped<CityRepository>();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<RoleRepository>();
+builder.Services.AddScoped<UserRolesRepository>();
+builder.Services.AddScoped<UnitOfWork>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
